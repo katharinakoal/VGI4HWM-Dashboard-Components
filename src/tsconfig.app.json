@@ -13,7 +13,14 @@
     "outDir": "../out-tsc/app",
     "module": "es2015",
     "baseUrl": "",
-    "types": []
+    "types": [
+      "lodash",
+      "leaflet",
+      "geojson",
+      "dc",
+      "d3",
+      "crossfilter"
+    ]
   },
   "exclude": [
     "test.ts",
