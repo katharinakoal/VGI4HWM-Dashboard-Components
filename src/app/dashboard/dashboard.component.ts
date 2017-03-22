@@ -28,8 +28,8 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
 
     this._map = L.map('map');
-    L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}', {
-        maxZoom: 9
+    L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 18
     }).addTo(this._map);
     this._map.setView([51.505, -0.09], 9);
 
@@ -48,6 +48,7 @@ export class DashboardComponent implements OnInit {
         iconSize: [25, 41],
         iconAnchor: [13, 40]
     });
+
 
     let breweryMarkers = new L.FeatureGroup([]);
     let fullDateFormat = d3.time.format('%a, %d %b %Y %X %Z');
@@ -94,12 +95,16 @@ export class DashboardComponent implements OnInit {
     let yearChart   = dc.pieChart('#chart-ring-year'),
       monthChart   = dc.pieChart('#chart-ring-month'),
       dayChart   = dc.pieChart('#chart-ring-day'),
-      ratingCountChart  = dc.barChart('#chart-rating-count'),
-      commRatingCountChart  = dc.barChart('#chart-community-rating-count'),
-      abvCountChart  = dc.barChart('#chart-abv-count'),
-      ibuCountChart  = dc.barChart('#chart-ibu-count'),
+      //ratingCountChart  = dc.barChart('#chart-rating-count'),
+      //commRatingCountChart  = dc.barChart('#chart-community-rating-count'),
+      //abvCountChart  = dc.barChart('#chart-abv-count'),
+      //ibuCountChart  = dc.barChart('#chart-ibu-count'),
+      volumeChart = dc.barChart('#monthly-volume-chart'),
       dataCount = dc.dataCount('#data-count'),
       dataTable = dc.dataTable('#data-table');
+
+
+
 
       yearChart
       .width(150)
@@ -136,60 +141,78 @@ export class DashboardComponent implements OnInit {
         return order[d.key];
       }
      );
-  ratingCountChart
-      .width(300)
-      .height(180)
-      .dimension(ratingDim)
-      .group(countPerRating)
-      .x(d3.scale.linear().domain([0,5.2]))
-      .elasticY(true)
-      .centerBar(true)
-      .barPadding(5)
-      .xAxisLabel('My rating')
-      .yAxisLabel('Count')
-      .margins({top: 10, right: 20, bottom: 50, left: 50});
-  ratingCountChart.xAxis().tickValues([0, 1, 2, 3, 4, 5]);
-  commRatingCountChart
-      .width(300)
-      .height(180)
-      .dimension(commRatingDim)
-      .group(countPerCommRating)
-      .x(d3.scale.linear().domain([0,5.2]))
-      .elasticY(true)
-      .centerBar(true)
-      .barPadding(5)
-      .xAxisLabel('Community rating')
-      .yAxisLabel('Count')
-      .margins({top: 10, right: 20, bottom: 50, left: 50});
-  commRatingCountChart.xAxis().tickValues([0, 1, 2, 3, 4, 5]);
-  abvCountChart
-      .width(300)
-      .height(180)
-      .dimension(abvDim)
-      .group(countPerABV)
-      .x(d3.scale.linear().domain([-0.2, d3.max(beerData, function (d: any) { return d.beer.beer_abv; }) + 0.2]))
-      .elasticY(true)
-      .centerBar(true)
-      .barPadding(2)
-      .xAxisLabel('Alcohol By Volume (%)')
-      .yAxisLabel('Count')
-      .margins({top: 10, right: 20, bottom: 50, left: 50});
-  ibuCountChart
-      .width(300)
-      .height(180)
-      .dimension(ibuDim)
-      .group(countPerIBU)
-      .x(d3.scale.linear().domain([-2, d3.max(beerData, function (d: any) { return d.beer.beer_ibu; }) + 2]))
-      .elasticY(true)
-      .centerBar(true)
-      .barPadding(5)
-      .xAxisLabel('International Bitterness Units')
-      .yAxisLabel('Count')
-      .xUnits(function (d) { return 5;})
-      .margins({top: 10, right: 20, bottom: 50, left: 50});
+  // ratingCountChart
+  //     .width(300)
+  //     .height(180)
+  //     .dimension(ratingDim)
+  //     .group(countPerRating)
+  //     .x(d3.scale.linear().domain([0,5.2]))
+  //     .elasticY(true)
+  //     .centerBar(true)
+  //     .barPadding(5)
+  //     .xAxisLabel('My rating')
+  //     .yAxisLabel('Count')
+  //     .margins({top: 10, right: 20, bottom: 50, left: 50});
+  // ratingCountChart.xAxis().tickValues([0, 1, 2, 3, 4, 5]);
+  // commRatingCountChart
+  //     .width(300)
+  //     .height(180)
+  //     .dimension(commRatingDim)
+  //     .group(countPerCommRating)
+  //     .x(d3.scale.linear().domain([0,5.2]))
+  //     .elasticY(true)
+  //     .centerBar(true)
+  //     .barPadding(5)
+  //     .xAxisLabel('Community rating')
+  //     .yAxisLabel('Count')
+  //     .margins({top: 10, right: 20, bottom: 50, left: 50});
+  // commRatingCountChart.xAxis().tickValues([0, 1, 2, 3, 4, 5]);
+  // abvCountChart
+  //     .width(300)
+  //     .height(180)
+  //     .dimension(abvDim)
+  //     .group(countPerABV)
+  //     .x(d3.scale.linear().domain([-0.2, d3.max(beerData, function (d: any) { return d.beer.beer_abv; }) + 0.2]))
+  //     .elasticY(true)
+  //     .centerBar(true)
+  //     .barPadding(2)
+  //     .xAxisLabel('Alcohol By Volume (%)')
+  //     .yAxisLabel('Count')
+  //     .margins({top: 10, right: 20, bottom: 50, left: 50});
+  // ibuCountChart
+  //     .width(300)
+  //     .height(180)
+  //     .dimension(ibuDim)
+  //     .group(countPerIBU)
+  //     .x(d3.scale.linear().domain([-2, d3.max(beerData, function (d: any) { return d.beer.beer_ibu; }) + 2]))
+  //     .elasticY(true)
+  //     .centerBar(true)
+  //     .barPadding(5)
+  //     .xAxisLabel('International Bitterness Units')
+  //     .yAxisLabel('Count')
+  //     .xUnits(function (d) { return 5;})
+  //     .margins({top: 10, right: 20, bottom: 50, left: 50});
   dataCount
       .dimension(ndx)
       .group(all);
+
+
+    var dateDim = ndx.dimension(function(d:any) { 
+      return d3.time.month(d.first_had_dt);
+    });
+    var numRecordsByDate = dateDim.group().reduceCount();
+
+    console.log(dateDim.bottom(1));
+
+   volumeChart.width(990) /* dc.barChart('#monthly-volume-chart', 'chartGroup'); */
+        .height(300)
+        .margins({top: 10, right: 50, bottom: 20, left: 40})
+        .dimension(dateDim)
+        .group(numRecordsByDate)
+        .transitionDuration(500)
+        .elasticY(true)
+        .x(d3.time.scale().domain(d3.extent(beerData, function(d: any) { return d.first_had_dt; })))
+        .xAxis();
 
 
    dataTable
@@ -221,7 +244,7 @@ export class DashboardComponent implements OnInit {
       });
       this._map.addLayer(breweryMarkers);
       this._map.fitBounds(breweryMarkers.getBounds());
-      console.log('asd');
+      
     });
 
     // register handlers
