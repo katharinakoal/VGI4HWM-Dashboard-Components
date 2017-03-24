@@ -6,16 +6,18 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 
+import { IRawMediaData } from '../interfaces/raw-media-data';
+
 @Injectable()
 export class DashboardDataService {
 
-  private _dataUrl = 'sample_data/sample.json';
+  private _dataUrl = 'sample_data/sample-media.json';
 
   constructor(private _http: Http) { }
 
-  getData(): Observable<any> {
+  getData(): Observable<IRawMediaData[]> {
       return this._http.get(this._dataUrl)
-          .map((response: Response) => <any[]> response.json())
+          .map((response: Response) => <IRawMediaData[]> response.json())
           .do(data => data)
           .catch(this.handleError);
   }

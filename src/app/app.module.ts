@@ -5,7 +5,6 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { DashboardDataService } from './dashboard/dashboard-data.service';
 
 @NgModule({
   declarations: [

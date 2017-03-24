@@ -2,10 +2,11 @@ import { Component, OnInit} from '@angular/core';
 import * as d3 from 'd3';
 import * as dc from 'dc';
 import * as L from 'leaflet';
-import * as _ from 'lodash';
 import * as crossfilter from 'crossfilter';
 
-import { DashboardDataService } from './dashboard-data.service';
+import { DashboardDataService } from './services/dashboard-data.service';
+import { IRawMediaData } from './interfaces/raw-media-data';
+import { IMediaData } from './interfaces/media-data';
 
 
 @Component({
@@ -18,12 +19,16 @@ export class DashboardComponent implements OnInit {
 
   data: any[];
   errorMessage: string;
+  header = 'VGI4HWM Dashboard Components';
+  subheader = 'Foto- und Videoaufnahmen';
 
+
+  private _timeChart: dc.BarChart;
   private _map: L.Map;
 
   constructor(private _dataService: DashboardDataService) {
 
-   }
+  }
 
   ngOnInit(): void {
 
@@ -35,11 +40,63 @@ export class DashboardComponent implements OnInit {
 
     this._dataService.getData()
       .subscribe( response => this.receiveData(response),
-                  error => this.errorMessage = error
-      );
+                error => this.errorMessage = error
+    );
+
   }
 
-  private receiveData( beerData: any ): void {
+  private receiveData( mediaData: IRawMediaData[] ): void {
+
+    const icon = L.icon({
+        iconUrl: 'assets/leaflet/marker-icon.png',
+        iconRetinaUrl: 'assets/leaflet/marker-icon-2x.png',
+        shadowUrl: 'assets/leaflet/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [13, 40]
+    });
+
+    const mediaMarkers = new L.FeatureGroup([]);
+
+    const fullDateFormat = d3.time.format.iso;
+
+    for ( const mediaElement of mediaData ){
+      (<IMediaData>mediaElement).date = d3.time.format.iso.parse(mediaElement.timestamp);
+    }
+
+    const cf = crossfilter(mediaData as IMediaData[]);
+
+    const allDim = cf.dimension( (d: IMediaData) => d );
+    const dateDim = cf.dimension( (d: IMediaData) => d.date );
+
+    this._timeChart = dc.barChart('#time-chart');
+
+    this._timeChart.on('renderlet', () => {
+          mediaMarkers.clearLayers();
+          for ( const mediaElement of allDim.top(Infinity) ){
+              mediaMarkers.addLayer(L.marker([mediaElement.location.lat, mediaElement.location.lng], {icon: icon}));
+          }
+          this._map.addLayer(mediaMarkers);
+          this._map.fitBounds(mediaMarkers.getBounds());
+        })
+        .height(300)
+        .margins({top: 20, right: 0, bottom: 20, left: 25})
+        .dimension(dateDim)
+        .group(dateDim.group())
+        .barPadding(1)
+        .elasticY(true)
+        .x(d3.time.scale().domain(d3.extent(mediaData, (d: IMediaData) => d.date )))
+        .xUnits(function(){return 20;})
+        .xAxis();
+
+    dc.renderAll();
+
+  }
+
+  public onResize(event): void {
+    this._timeChart.render();
+  }
+
+  private receiveSampleData( beerData: any ): void {
 
     let icon = L.icon({
         iconUrl: 'assets/leaflet/marker-icon.png',
@@ -50,26 +107,27 @@ export class DashboardComponent implements OnInit {
     });
 
 
+
     let breweryMarkers = new L.FeatureGroup([]);
     let fullDateFormat = d3.time.format('%a, %d %b %Y %X %Z');
     let yearFormat = d3.time.format('%Y');
     let monthFormat = d3.time.format('%b');
     let dayOfWeekFormat = d3.time.format('%a');
 
-    _.each(beerData, function(d) {
-      d.count = +d.count;
-      // round to nearest 0.25
-      d.rating_score = Math.round(+d.rating_score * 4) / 4;
-      d.beer.rating_score = Math.round(+d.beer.rating_score * 4) / 4;
-      // round to nearest 0.5
-      d.beer.beer_abv = Math.round(+d.beer.beer_abv * 2) / 2;
-      // round to nearest 10
-      d.beer.beer_ibu = Math.floor(+d.beer.beer_ibu / 10) * 10;
-      d.first_had_dt = fullDateFormat.parse(d.first_had);
-      d.first_had_year = +yearFormat(d.first_had_dt);
-      d.first_had_month = monthFormat(d.first_had_dt);
-      d.first_had_day = dayOfWeekFormat(d.first_had_dt);
-    });
+    // _.each(beerData, function(d) {
+    //   d.count = +d.count;
+    //   // round to nearest 0.25
+    //   d.rating_score = Math.round(+d.rating_score * 4) / 4;
+    //   d.beer.rating_score = Math.round(+d.beer.rating_score * 4) / 4;
+    //   // round to nearest 0.5
+    //   d.beer.beer_abv = Math.round(+d.beer.beer_abv * 2) / 2;
+    //   // round to nearest 10
+    //   d.beer.beer_ibu = Math.floor(+d.beer.beer_ibu / 10) * 10;
+    //   d.first_had_dt = fullDateFormat.parse(d.first_had);
+    //   d.first_had_year = +yearFormat(d.first_had_dt);
+    //   d.first_had_month = monthFormat(d.first_had_dt);
+    //   d.first_had_day = dayOfWeekFormat(d.first_had_dt);
+    // });
 
     let ndx = crossfilter(beerData);
 
@@ -95,10 +153,10 @@ export class DashboardComponent implements OnInit {
     let yearChart   = dc.pieChart('#chart-ring-year'),
       monthChart   = dc.pieChart('#chart-ring-month'),
       dayChart   = dc.pieChart('#chart-ring-day'),
-      //ratingCountChart  = dc.barChart('#chart-rating-count'),
-      //commRatingCountChart  = dc.barChart('#chart-community-rating-count'),
-      //abvCountChart  = dc.barChart('#chart-abv-count'),
-      //ibuCountChart  = dc.barChart('#chart-ibu-count'),
+      ratingCountChart  = dc.barChart('#chart-rating-count'),
+      commRatingCountChart  = dc.barChart('#chart-community-rating-count'),
+      abvCountChart  = dc.barChart('#chart-abv-count'),
+      ibuCountChart  = dc.barChart('#chart-ibu-count'),
       volumeChart = dc.barChart('#monthly-volume-chart'),
       dataCount = dc.dataCount('#data-count'),
       dataTable = dc.dataTable('#data-table');
@@ -141,57 +199,57 @@ export class DashboardComponent implements OnInit {
         return order[d.key];
       }
      );
-  // ratingCountChart
-  //     .width(300)
-  //     .height(180)
-  //     .dimension(ratingDim)
-  //     .group(countPerRating)
-  //     .x(d3.scale.linear().domain([0,5.2]))
-  //     .elasticY(true)
-  //     .centerBar(true)
-  //     .barPadding(5)
-  //     .xAxisLabel('My rating')
-  //     .yAxisLabel('Count')
-  //     .margins({top: 10, right: 20, bottom: 50, left: 50});
-  // ratingCountChart.xAxis().tickValues([0, 1, 2, 3, 4, 5]);
-  // commRatingCountChart
-  //     .width(300)
-  //     .height(180)
-  //     .dimension(commRatingDim)
-  //     .group(countPerCommRating)
-  //     .x(d3.scale.linear().domain([0,5.2]))
-  //     .elasticY(true)
-  //     .centerBar(true)
-  //     .barPadding(5)
-  //     .xAxisLabel('Community rating')
-  //     .yAxisLabel('Count')
-  //     .margins({top: 10, right: 20, bottom: 50, left: 50});
-  // commRatingCountChart.xAxis().tickValues([0, 1, 2, 3, 4, 5]);
-  // abvCountChart
-  //     .width(300)
-  //     .height(180)
-  //     .dimension(abvDim)
-  //     .group(countPerABV)
-  //     .x(d3.scale.linear().domain([-0.2, d3.max(beerData, function (d: any) { return d.beer.beer_abv; }) + 0.2]))
-  //     .elasticY(true)
-  //     .centerBar(true)
-  //     .barPadding(2)
-  //     .xAxisLabel('Alcohol By Volume (%)')
-  //     .yAxisLabel('Count')
-  //     .margins({top: 10, right: 20, bottom: 50, left: 50});
-  // ibuCountChart
-  //     .width(300)
-  //     .height(180)
-  //     .dimension(ibuDim)
-  //     .group(countPerIBU)
-  //     .x(d3.scale.linear().domain([-2, d3.max(beerData, function (d: any) { return d.beer.beer_ibu; }) + 2]))
-  //     .elasticY(true)
-  //     .centerBar(true)
-  //     .barPadding(5)
-  //     .xAxisLabel('International Bitterness Units')
-  //     .yAxisLabel('Count')
-  //     .xUnits(function (d) { return 5;})
-  //     .margins({top: 10, right: 20, bottom: 50, left: 50});
+  ratingCountChart
+      .width(300)
+      .height(180)
+      .dimension(ratingDim)
+      .group(countPerRating)
+      .x(d3.scale.linear().domain([0,5.2]))
+      .elasticY(true)
+      .centerBar(true)
+      .barPadding(5)
+      .xAxisLabel('My rating')
+      .yAxisLabel('Count')
+      .margins({top: 10, right: 20, bottom: 50, left: 50});
+  ratingCountChart.xAxis().tickValues([0, 1, 2, 3, 4, 5]);
+  commRatingCountChart
+      .width(300)
+      .height(180)
+      .dimension(commRatingDim)
+      .group(countPerCommRating)
+      .x(d3.scale.linear().domain([0,5.2]))
+      .elasticY(true)
+      .centerBar(true)
+      .barPadding(5)
+      .xAxisLabel('Community rating')
+      .yAxisLabel('Count')
+      .margins({top: 10, right: 20, bottom: 50, left: 50});
+  commRatingCountChart.xAxis().tickValues([0, 1, 2, 3, 4, 5]);
+  abvCountChart
+      .width(300)
+      .height(180)
+      .dimension(abvDim)
+      .group(countPerABV)
+      .x(d3.scale.linear().domain([-0.2, d3.max(beerData, function (d: any) { return d.beer.beer_abv; }) + 0.2]))
+      .elasticY(true)
+      .centerBar(true)
+      .barPadding(2)
+      .xAxisLabel('Alcohol By Volume (%)')
+      .yAxisLabel('Count')
+      .margins({top: 10, right: 20, bottom: 50, left: 50});
+  ibuCountChart
+      .width(300)
+      .height(180)
+      .dimension(ibuDim)
+      .group(countPerIBU)
+      .x(d3.scale.linear().domain([-2, d3.max(beerData, function (d: any) { return d.beer.beer_ibu; }) + 2]))
+      .elasticY(true)
+      .centerBar(true)
+      .barPadding(5)
+      .xAxisLabel('International Bitterness Units')
+      .yAxisLabel('Count')
+      .xUnits(function (d) { return 5;})
+      .margins({top: 10, right: 20, bottom: 50, left: 50});
   dataCount
       .dimension(ndx)
       .group(all);
@@ -210,6 +268,7 @@ export class DashboardComponent implements OnInit {
         .dimension(dateDim)
         .group(numRecordsByDate)
         .transitionDuration(500)
+        .barPadding(1)
         .elasticY(true)
         .x(d3.time.scale().domain(d3.extent(beerData, function(d: any) { return d.first_had_dt; })))
         .xAxis();
@@ -235,16 +294,22 @@ export class DashboardComponent implements OnInit {
       table.select('tr.dc-table-group').remove();
       // update map with breweries to match filtered data
       breweryMarkers.clearLayers();
-      _.each(allDim.top(Infinity), function (d: any) {
-        var loc = d.brewery.location;
-        var name = d.brewery.brewery_name;
-        var marker = L.marker([loc.lat, loc.lng],{icon:icon});
-        marker.bindPopup("<p>" + name + " " + loc.brewery_city + " " + loc.brewery_state + "</p>");
-        breweryMarkers.addLayer(marker);
-      });
+      // _.each(allDim.top(Infinity), function (d: any) {
+      //   var loc = d.brewery.location;
+      //   var name = d.brewery.brewery_name;
+      //   var marker = L.marker([loc.lat, loc.lng],{icon:icon});
+      //   marker.bindPopup("<p>" + name + " " + loc.brewery_city + " " + loc.brewery_state + "</p>");
+      //   breweryMarkers.addLayer(marker);
+      // });
       this._map.addLayer(breweryMarkers);
       this._map.fitBounds(breweryMarkers.getBounds());
-      
+
+    });
+
+    this._map.on('moveend', (e) => {
+      let filter = this._map.getBounds();
+       
+      console.log(filter);
     });
 
     // register handlers
