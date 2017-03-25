@@ -13,6 +13,10 @@
   width: 100%;
 }
 
+:host /deep/ #time-chart svg {
+  overflow-x: overlay;
+}
+
 .row-eq-height {
   @include flexbox();
 }
