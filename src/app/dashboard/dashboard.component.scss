@@ -20,3 +20,36 @@
 .row-eq-height {
   @include flexbox();
 }
+
+:host /deep/ .vector-marker {
+  width: 35px;
+  height: 46px;
+  position:absolute;
+  left:0;
+  top:0;
+  display: block;
+  text-align: center;
+
+  path {
+    stroke: black;
+    stroke-opacity: 0.4;
+    stroke-width: 0.5;
+  }
+
+  &.not-accepted {
+    opacity: 0.5;
+  }
+}
+
+:host /deep/ .vector-marker-shadow:before {
+  bottom: -13px;
+  box-shadow: 35px -10px 10px rgba(0,0,0,0.4);
+  content: "";
+  height: 40%;
+  position: absolute;
+  right: 21px;
+  transform-origin: 50% 50%;
+  transform: skew(150deg) rotate(-40deg);
+  width: 60%;
+  z-index: -1;
+ }

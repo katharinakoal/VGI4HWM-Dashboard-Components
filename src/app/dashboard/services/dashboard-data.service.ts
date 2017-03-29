@@ -5,8 +5,10 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
+import * as d3 from 'd3';
 
 import { IRawMediaData } from '../interfaces/raw-media-data';
+import { IMediaData } from '../interfaces/media-data';
 
 @Injectable()
 export class DashboardDataService {
@@ -15,11 +17,18 @@ export class DashboardDataService {
 
   constructor(private _http: Http) { }
 
-  getData(): Observable<IRawMediaData[]> {
+  getData(): Observable<IMediaData[]> {
       return this._http.get(this._dataUrl)
-          .map((response: Response) => <IRawMediaData[]> response.json())
+          .map((response: Response) => this.prepareData(<IRawMediaData[]> response.json()))
           .do(data => data)
           .catch(this.handleError);
+  }
+
+  private prepareData( mediadata: IRawMediaData[] ): IMediaData[] {
+    for ( const mediaElement of mediadata ){
+        (<IMediaData>mediaElement).date = d3.time.format.iso.parse(mediaElement.timestamp);
+    }
+    return <IMediaData[]> mediadata;
   }
 
   private handleError(error: Response) {

@@ -5,7 +5,7 @@ import * as L from 'leaflet';
 import * as crossfilter from 'crossfilter';
 
 import { DashboardDataService } from './services/dashboard-data.service';
-import { IRawMediaData } from './interfaces/raw-media-data';
+import { DashboardMapService } from './services/dashboard-map.service';
 import { IMediaData } from './interfaces/media-data';
 
 
@@ -13,7 +13,7 @@ import { IMediaData } from './interfaces/media-data';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  providers: [DashboardDataService]
+  providers: [DashboardDataService, DashboardMapService]
 })
 export class DashboardComponent implements OnInit {
 
@@ -24,19 +24,12 @@ export class DashboardComponent implements OnInit {
 
 
   private _timeChart: dc.BarChart;
-  private _map: L.Map;
 
-  constructor(private _dataService: DashboardDataService) {
-
-  }
+  constructor(private _dataService: DashboardDataService, private _mapService: DashboardMapService) {}
 
   ngOnInit(): void {
 
-    this._map = L.map('map');
-    L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-        maxZoom: 18
-    }).addTo(this._map);
-    this._map.setView([51.505, -0.09], 9);
+    this._mapService.createMap();
 
     this._dataService.getData()
       .subscribe( response => this.receiveData(response),
@@ -45,17 +38,7 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  private receiveData( mediaData: IRawMediaData[] ): void {
-
-    const icon = L.icon({
-        iconUrl: 'assets/leaflet/marker-icon.png',
-        iconRetinaUrl: 'assets/leaflet/marker-icon-2x.png',
-        shadowUrl: 'assets/leaflet/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [13, 40]
-    });
-
-    const mediaMarkers = new L.FeatureGroup([]);
+  private receiveData( mediaData: IMediaData[] ): void {
 
     const fullDateFormat = d3.time.format.iso;
 
@@ -70,23 +53,19 @@ export class DashboardComponent implements OnInit {
 
     this._timeChart = dc.barChart('#time-chart');
 
-    this._timeChart.on('renderlet', () => {
-          mediaMarkers.clearLayers();
-          for ( const mediaElement of allDim.top(Infinity) ){
-              mediaMarkers.addLayer(L.marker([mediaElement.location.lat, mediaElement.location.lng], {icon: icon}));
-          }
-          this._map.addLayer(mediaMarkers);
-          this._map.fitBounds(mediaMarkers.getBounds());
-        })
+    this._timeChart.on('renderlet', () => this._mapService.updateMarker(allDim.top(Infinity)))
         .height(300)
         .margins({top: 20, right: 0, bottom: 20, left: 25})
         .dimension(dateDim)
         .group(dateDim.group())
-        .barPadding(1)
+        .barPadding(2)
+        .centerBar(true)
         .elasticY(true)
-        .x(d3.time.scale().domain(d3.extent(mediaData, (d: IMediaData) => d.date )))
-        .xUnits(function(){return 20;})
-        .xAxis();
+        .x(d3.time.scale().domain([
+          d3.time.day.offset(d3.min(mediaData, (d: IMediaData) => d.date ), -1),
+          d3.time.day.offset(d3.max(mediaData, (d: IMediaData) => d.date ), 1)
+          ]))
+        .xUnits(function(){ return 20; });
 
     dc.renderAll();
 
@@ -97,15 +76,6 @@ export class DashboardComponent implements OnInit {
   }
 
   private receiveSampleData( beerData: any ): void {
-
-    let icon = L.icon({
-        iconUrl: 'assets/leaflet/marker-icon.png',
-        iconRetinaUrl: 'assets/leaflet/marker-icon-2x.png',
-        shadowUrl: 'assets/leaflet/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [13, 40]
-    });
-
 
 
     let breweryMarkers = new L.FeatureGroup([]);
@@ -301,16 +271,16 @@ export class DashboardComponent implements OnInit {
       //   marker.bindPopup("<p>" + name + " " + loc.brewery_city + " " + loc.brewery_state + "</p>");
       //   breweryMarkers.addLayer(marker);
       // });
-      this._map.addLayer(breweryMarkers);
-      this._map.fitBounds(breweryMarkers.getBounds());
+      //this._map.addLayer(breweryMarkers);
+      //this._map.fitBounds(breweryMarkers.getBounds());
 
     });
 
-    this._map.on('moveend', (e) => {
-      let filter = this._map.getBounds();
+    // this._map.on('moveend', (e) => {
+    //   let filter = this._map.getBounds();
        
-      console.log(filter);
-    });
+    //   console.log(filter);
+    // });
 
     // register handlers
   d3.selectAll('a#all').on('click', function () {
