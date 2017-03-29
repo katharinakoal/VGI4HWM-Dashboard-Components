@@ -13,7 +13,7 @@
   width: 100%;
 }
 
-:host /deep/ #time-chart svg {
+:host #{"/deep/"} #time-chart svg {
   overflow-x: overlay;
 }
 
@@ -21,7 +21,7 @@
   @include flexbox();
 }
 
-:host /deep/ .vector-marker {
+:host #{"/deep/"} .vector-marker {
   width: 35px;
   height: 46px;
   position:absolute;
@@ -41,7 +41,7 @@
   }
 }
 
-:host /deep/ .vector-marker-shadow:before {
+:host #{"/deep/"} .vector-marker-shadow:before {
   bottom: -13px;
   box-shadow: 35px -10px 10px rgba(0,0,0,0.4);
   content: "";

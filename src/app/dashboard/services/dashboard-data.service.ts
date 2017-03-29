@@ -7,8 +7,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 import * as d3 from 'd3';
 
-import { IRawMediaData } from '../interfaces/raw-media-data';
-import { IMediaData } from '../interfaces/media-data';
+import { IRawMediaData, IMediaData } from '../interfaces/media-data';
 
 @Injectable()
 export class DashboardDataService {

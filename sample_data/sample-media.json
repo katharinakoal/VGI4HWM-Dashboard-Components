@@ -13,13 +13,11 @@
             }
         ],
         "videos": null,
-        "categories": [
-            {
-                "id": 1,
-                "shortname": "Ausuferungen",
-                "longname": "Ausuferungen"
-            }
-        ]
+        "category": {
+            "id": 1,
+            "shortname": "Ausuferungen",
+            "longname": "Ausuferungen"
+        }
     },
     {
         "uuid": "47174d8f-1b8e-4599-8a59-b580dd55bc12",
@@ -35,13 +33,11 @@
             }
         ],
         "videos": null,
-        "categories": [
-            {
-                "id": 2,
-                "shortname": "HW-Anschlagslinien",
-                "longname": "Hochwasser Anschlagslinien"
-            }
-        ]
+        "category": {
+            "id": 2,
+            "shortname": "HW-Anschlagslinien",
+            "longname": "Hochwasser Anschlagslinien"
+        }
     },
     {
         "uuid": "47174d8f-1b8e-4599-8a59-b580dd55bc16",
@@ -57,13 +53,11 @@
             }
         ],
         "videos": null,
-        "categories": [
-            {
-                "id": 3,
-                "shortname": "HW Schäden",
-                "longname": "Hochwasser Schäden"
-            }
-        ]
+        "category": {
+            "id": 3,
+            "shortname": "HW Schäden",
+            "longname": "Hochwasser Schäden"
+        }
     },
     {
         "uuid": "47174d8f-1b8e-4599-8a59-b580dd55bc16",
@@ -79,13 +73,11 @@
             }
         ],
         "videos": null,
-        "categories": [
-            {
-                "id": 4,
-                "shortname": "Wasserstand",
-                "longname": "Hochwasser"
-            }
-        ]
+        "category": {
+            "id": 4,
+            "shortname": "Wasserstand",
+            "longname": "Hochwasser"
+        }
     },
     {
         "uuid": "47174d8f-1b8e-4599-8a59-b580dd55fc87",
@@ -105,13 +97,11 @@
             }
         ],
         "videos": null,
-        "categories": [
-            {
-                "id": 1,
-                "shortname": "Ausuferungen",
-                "longname": "Ausuferungen"
-            }
-        ]
+        "category": {
+            "id": 1,
+            "shortname": "Ausuferungen",
+            "longname": "Ausuferungen"
+        }
     },
     {
         "uuid": "47174d8f-1b8e-4599-8b59-b580dd55fc87",
@@ -127,13 +117,11 @@
             }
         ],
         "videos": null,
-        "categories": [
-            {
-                "id": 1,
-                "shortname": "Ausuferungen",
-                "longname": "Ausuferungen"
-            }
-        ]
+        "category": {
+            "id": 1,
+            "shortname": "Ausuferungen",
+            "longname": "Ausuferungen"
+        }
     },
     {
         "uuid": "47174d8f-1b8e-4599-8b59-b580dd55fc87",
@@ -142,20 +130,16 @@
             "lat": 50.993921,
             "lng": 12.529763
         },
-        "images": [
-            {
-                "url": "http://lorempixel.com/1280/800/nature/",
-                "thumbnail_url": "http://lorempixel.com/150/100/nature/"
-            }
-        ],
+        "images": {
+            "url": "http://lorempixel.com/1280/800/nature/",
+            "thumbnail_url": "http://lorempixel.com/150/100/nature/"
+        },
         "videos": null,
-        "categories": [
-            {
-                "id": 1,
-                "shortname": "Ausuferungen",
-                "longname": "Ausuferungen"
-            }
-        ]
+        "category": {
+            "id": 1,
+            "shortname": "Ausuferungen",
+            "longname": "Ausuferungen"
+        }
     },
     {
         "uuid": "47174d8f-1b8e-4599-8b59-b580dd55fc87",
@@ -171,7 +155,7 @@
             }
         ],
         "videos": null,
-        "categories": [
+        "category": [
             {
                 "id": 2,
                 "shortname": "HW-Anschlagslinien",
@@ -193,13 +177,11 @@
             }
         ],
         "videos": null,
-        "categories": [
-            {
-                "id": 2,
-                "shortname": "HW-Anschlagslinien",
-                "longname": "Hochwasser Anschlagslinien"
-            }
-        ]
+        "category": {
+            "id": 2,
+            "shortname": "HW-Anschlagslinien",
+            "longname": "Hochwasser Anschlagslinien"
+        }
     },
     {
         "uuid": "47174d8f-1b8e-4599-8b59-b580dd55fc87",
@@ -215,12 +197,10 @@
             }
         ],
         "videos": null,
-        "categories": [
-            {
-                "id": 2,
-                "shortname": "HW-Anschlagslinien",
-                "longname": "Hochwasser Anschlagslinien"
-            }
-        ]
+        "category": {
+            "id": 4,
+            "shortname": "Wasserstand",
+            "longname": "Hochwasser"
+        }
     }
 ]
