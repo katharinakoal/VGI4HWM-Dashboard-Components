@@ -11,7 +11,8 @@
     <div class="col-xs-12">
       <div id="category-selection" class="form-group">
         <label *ngFor="let category of categories" class="checkbox-inline">
-          <input type="checkbox" [checked]="true" (change)="updateCategoryFilter(category, $event)" [value]="category.id"/> {{category.longname}}
+          <input type="checkbox" [(ngModel)]="category.active" (change)="updateCategoryFilter(category, $event)" [value]="category.id"/> {{category.longname}}
+          <i [style.background]="category.color" class="indicator"></i>
         </label>
       </div>
     </div>

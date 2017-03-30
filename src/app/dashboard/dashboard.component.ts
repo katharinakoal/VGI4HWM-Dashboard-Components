@@ -21,7 +21,8 @@ export class DashboardComponent implements OnInit {
   errorMessage: string;
   header = 'VGI4HWM Dashboard Components';
   subheader = 'Foto- und Videoaufnahmen';
-  categories: Array<IMediaCategory & { color: string }>;
+  categories: Array<IMediaCategory & { color: string, active: boolean }>;
+  private _categoryDim: CrossFilter.Dimension<IMediaData, IMediaCategory>;
 
   private _timeChart: dc.BarChart;
 
@@ -51,19 +52,19 @@ export class DashboardComponent implements OnInit {
 
     const allDim = cf.dimension((d: IMediaData) => d);
     const dateDim = cf.dimension((d: IMediaData) => d.date);
-    const categoryDim = cf.dimension((d: IMediaData) => {
+    this._categoryDim = cf.dimension((d: IMediaData) => {
       d.category.valueOf = () => d.category.id;
       return d.category;
     });
     const dateGroup = dateDim.group();
-    const categoryGroup = categoryDim.group();
+    const categoryGroup = this._categoryDim.group();
 
     const categoryCounts = {};
 
     categoryGroup.all().forEach((group, index) => {
       categoryCounts[group.key.shortname] = 0;
       const color = index in colors.range() ? colors.range()[index] : '#000';
-      this.categories.push( Object.assign(group.key, {color: color}) );
+      this.categories.push( Object.assign(group.key, {color: color, active: true}) );
     });
 
     this._mapService.addMarkerGroups( this.categories );
@@ -85,7 +86,7 @@ export class DashboardComponent implements OnInit {
     this._timeChart = dc.barChart('#time-chart');
 
     this._timeChart.on('renderlet', () => this._mapService.updateMarker(allDim.top(Infinity)))
-      .height(300)
+      .height(180)
       .margins({ top: 20, right: 0, bottom: 20, left: 25 })
       .dimension(dateDim)
       .barPadding(2)
@@ -123,8 +124,11 @@ export class DashboardComponent implements OnInit {
   }
 
   public updateCategoryFilter(option, event): void {
-    console.log(option);
-    console.log(event.target.checked);
+    const selection = this.categories.filter((e) => e.active);
+    this._categoryDim.filterAll().filter( (f) => {
+      return -1 !== selection.findIndex((g) => g.id === f.id);
+    });
+    dc.redrawAll();
   }
 
 }
