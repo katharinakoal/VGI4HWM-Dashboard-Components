@@ -7,18 +7,28 @@
   <div class="row" *ngIf="errorMessage">
     <div class="alert alert-danger">{{errorMessage}}</div>
   </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div id="category-selection" class="form-group">
+        <label *ngFor="let category of categories" class="checkbox-inline">
+          <input type="checkbox" [checked]="true" (change)="updateCategoryFilter(category, $event)" [value]="category.id"/> {{category.longname}}
+        </label>
+      </div>
+    </div>
+  </div>
   <div class="row row-eq-height">
     <div class="col-xs-8">
       <div id="map"></div>
     </div>
     <div class="col-xs-4">
       <div id="gallery">
+        <div id="select"></div>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col-xs-12">
-      <div (window:resize)="onResize($event)" id="time-chart" class="dc-chart"></div>   
+      <div (window:resize)="onResize($event)" id="time-chart" class="dc-chart"></div>
     </div>
   </div>
 </div>

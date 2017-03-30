@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit {
   errorMessage: string;
   header = 'VGI4HWM Dashboard Components';
   subheader = 'Foto- und Videoaufnahmen';
-
+  categories: Array<IMediaCategory & { color: string }>;
 
   private _timeChart: dc.BarChart;
 
@@ -34,12 +34,14 @@ export class DashboardComponent implements OnInit {
       .subscribe(response => this.receiveData(response),
       error => this.errorMessage = error
       );
+    this.categories = new Array();
 
   }
 
   private receiveData(mediaData: IMediaData[]): void {
 
     const fullDateFormat = d3.time.format.iso;
+    const colors = d3.scale.category10();
 
     for (const mediaElement of mediaData) {
       (<IMediaData>mediaElement).date = d3.time.format.iso.parse(mediaElement.timestamp);
@@ -58,13 +60,15 @@ export class DashboardComponent implements OnInit {
 
     const categoryCounts = {};
 
-    for (const group of categoryGroup.all()) {
+    categoryGroup.all().forEach((group, index) => {
       categoryCounts[group.key.shortname] = 0;
-      let c = categoryDim.filter(group.key);
-    }
+      const color = index in colors.range() ? colors.range()[index] : '#000';
+      this.categories.push( Object.assign(group.key, {color: color}) );
+    });
 
-    /** marked for refactoring */
-    categoryDim.filterAll();
+    this._mapService.addMarkerGroups( this.categories );
+
+    console.log(this.categories);
 
     const categoryByDate = dateDim.group().reduce(
       (p, v) => {
@@ -91,7 +95,8 @@ export class DashboardComponent implements OnInit {
         d3.time.day.offset(d3.min(mediaData, (d: IMediaData) => d.date), -1),
         d3.time.day.offset(d3.max(mediaData, (d: IMediaData) => d.date), 1)
       ]))
-      .xUnits(function () { return 20; });
+      .xUnits(function () { return 20; })
+      .colors(colors);
 
     categoryGroup.all().forEach((group, index) => {
 
@@ -107,11 +112,19 @@ export class DashboardComponent implements OnInit {
 
     });
 
+    // const test = categoryGroup.all()[2];
+    // categoryDim.filter(test.key);
+
     dc.renderAll();
   }
 
   public onResize(event): void {
     this._timeChart.render();
+  }
+
+  public updateCategoryFilter(option, event): void {
+    console.log(option);
+    console.log(event.target.checked);
   }
 
 }

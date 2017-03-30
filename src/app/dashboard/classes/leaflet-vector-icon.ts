@@ -17,11 +17,12 @@ export class LeafletVectorIcon extends L.Icon {
     constructor(options?) {
         super(options);
         L.Util.setOptions(this, this._iconOptions);
+        L.Util.setOptions(this, options);
     }
 
     createIcon(oldIcon) {
         const div = (oldIcon && oldIcon.tagName === 'DIV' ? oldIcon : document.createElement('div'));
-        const options = this.options;
+        const options: any = this.options;
 
         div.innerHTML = `<svg 
             width="${options.iconSize[0]}px" 
@@ -30,11 +31,11 @@ export class LeafletVectorIcon extends L.Icon {
             version="1.1" 
             xmlns="http://www.w3.org/2000/svg" 
             xmlns:xlink="http://www.w3.org/1999/xlink">
-            <path d="${this._mapPin}" fill="${this._iconOptions.markerColor}"></path>
+            <path d="${this._mapPin}" fill="${options.markerColor}"></path>
         </svg>`;
 
         this._setIconStyles(div, 'icon');
-        this._setIconStyles(div, `icon-${this._iconOptions.markerColor}`);
+        this._setIconStyles(div, `icon-${options.markerColor}`);
         return div;
     }
 
