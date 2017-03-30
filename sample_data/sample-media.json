@@ -155,13 +155,11 @@
             }
         ],
         "videos": null,
-        "category": [
-            {
-                "id": 2,
-                "shortname": "HW-Anschlagslinien",
-                "longname": "Hochwasser Anschlagslinien"
-            }
-        ]
+        "category": {
+            "id": 2,
+            "shortname": "HW-Anschlagslinien",
+            "longname": "Hochwasser Anschlagslinien"
+        }
     },
     {
         "uuid": "47174d8f-1b8e-4599-8b59-b580dd55fc87",
