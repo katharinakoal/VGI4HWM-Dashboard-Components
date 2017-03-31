@@ -90,6 +90,7 @@ export class DashboardComponent implements OnInit {
       .margins({ top: 20, right: 0, bottom: 20, left: 25 })
       .dimension(dateDim)
       .barPadding(2)
+      .transitionDuration(200)
       .centerBar(true)
       .elasticY(true)
       .x(d3.time.scale().domain([

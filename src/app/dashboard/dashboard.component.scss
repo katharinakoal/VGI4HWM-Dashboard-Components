@@ -12,12 +12,22 @@
 #time-chart{
   width: 100%;
 }
-i.indicator{
-  width: 2em;
-  height: 1em;
-  display: inline-block;
-  vertical-align: middle;
-  border-radius: .5em;
+
+#category-selection{
+
+  label{
+    margin-left:0;
+    margin-right: 3em;
+  }
+
+  i.indicator{
+    width: 2em;
+    height: 1em;
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: .5em;
+  }
+
 }
 
 :host #{"/deep/"} #time-chart svg {
