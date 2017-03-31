@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="page-header">
-      <h1>{{header}} <small class="text-nowrap">{{subheader}}</small></h1>
+      <h1>VGI4HWM Dashboard Components <small class="text-nowrap">Foto- und Videoaufnahmen</small></h1>
     </div>
   </div>
   <div class="row" *ngIf="errorMessage">
@@ -22,83 +22,22 @@
       <div id="map"></div>
     </div>
     <div class="col-xs-4">
-      <div id="gallery">
-        <div id="select"></div>
+      <div id="gallery" class="well">
+        <ul class="list-inline">
+          <ng-template ngFor let-element [ngForOf]="selection">
+            <li class="col-xs-12 col-sm-6 col-lg-4" *ngFor="let image of element.images">
+              <img [src]="image.thumbnail_url" class="img-responsive" [attr.title]="image.title" [attr.alt]="image.caption">
+            </li>
+          </ng-template>
+        </ul>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col-xs-12">
-      <div (window:resize)="onResize($event)" id="time-chart" class="dc-chart"></div>
+      <div (window:resize)="onResize($event)" id="time-chart" class="dc-chart">
+        <h4>Aufnahmen pro Tag <a style="display:none;" class="btn btn-default btn-xs reset pull-right" (click)="resetTimeChart()">Auswahl zurücksetzen</a></h4>
+      </div>
     </div>
   </div>
 </div>
-<!--<div class="container-fluid">
-  <div class="row">
-    <div class="col-xs-12 dc-data-count dc-chart" id="data-count">
-      <h2>
-        <small>
-          <span>
-          <span class="filter-count"></span> selected out of <span class="total-count"></span> records |
-           <a id="all" href="#">Reset All</a>
-          </span>
-        </small>
-      </h2>
-    </div>
-  </div>
-  <div class="row" id="control-row">
-    <div class="col-xs-2 pie-chart">
-      <h4>Year <small><a id="year">reset</a></small></h4>
-      <div class="dc-chart" id="chart-ring-year"></div>
-    </div>
-    <div class="col-xs-2 pie-chart">
-      <h4>Month <small><a id="month" href="#">reset</a></small></h4>
-      <div class="dc-chart" id="chart-ring-month"></div>
-    </div>
-    <div class="col-xs-2 pie-chart">
-      <h4>Day <small><a id="day">reset</a></small></h4>
-      <div id="chart-ring-day" class="dc-chart"></div>
-    </div>
-    <div class="col-xs-6">
-      <h4>Breweries</h4>
-      <div id="map"></div>
-    </div>
-  </div>
-  <div class="row">
-     <div class="col-xs-12">
-      <div id="monthly-volume-chart" class="dc-chart"></div>  
-     </div>  
-  </div>
-  <div class="row">
-    <div class="col-xs-6 col-md-3">
-      <div class="dc-chart" id="chart-rating-count"></div>
-    </div>
-    <div class="col-xs-6 col-md-3">
-      <div class="dc-chart" id="chart-community-rating-count"></div>
-    </div>
-    <div class="col-xs-6 col-md-3">
-      <div class="dc-chart" id="chart-abv-count"></div>
-    </div>
-    <div class="col-xs-6 col-md-3">
-      <div class="dc-chart" id="chart-ibu-count"></div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-xs-12">
-      <table class="table table-bordered table-striped" id="data-table">
-        <thead>
-          <tr class="header">
-            <th>Brewery</th>
-            <th>Beer</th>
-            <th>Style</th>
-            <th>My Rating</th>
-            <th>Community Rating</th>
-            <th>ABV %</th>
-            <th>IBU</th>
-          </tr>
-        </thead>
-      </table>
-    </div>
-  </div>
-</div>
--->

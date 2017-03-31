@@ -9,7 +9,9 @@
         "images": [
             {
                 "url": "http://lorempixel.com/1280/800/nature/1/",
-                "thumbnail_url": "http://lorempixel.com/150/100/nature/1/"
+                "thumbnail_url": "http://lorempixel.com/150/100/nature/1/",
+                "title": "Sample Title",
+                "caption": "Lorem Ipsum dolor sit amet"
             }
         ],
         "videos": null,
@@ -76,7 +78,7 @@
         "category": {
             "id": 4,
             "shortname": "Wasserstand",
-            "longname": "Hochwasser"
+            "longname": "Wasserstand"
         }
     },
     {
@@ -130,10 +132,12 @@
             "lat": 50.993921,
             "lng": 12.529763
         },
-        "images": {
-            "url": "http://lorempixel.com/1280/800/nature/",
-            "thumbnail_url": "http://lorempixel.com/150/100/nature/"
-        },
+        "images": [
+            {
+                "url": "http://lorempixel.com/1280/800/nature/",
+                "thumbnail_url": "http://lorempixel.com/150/100/nature/"
+            }
+        ],
         "videos": null,
         "category": {
             "id": 1,
@@ -198,7 +202,7 @@
         "category": {
             "id": 4,
             "shortname": "Wasserstand",
-            "longname": "Hochwasser"
+            "longname": "Wasserstand"
         }
     }
 ]

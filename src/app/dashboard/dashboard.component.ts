@@ -8,6 +8,7 @@ import { DashboardDataService } from './services/dashboard-data.service';
 import { DashboardMapService } from './services/dashboard-map.service';
 import { IMediaData, IMediaCategory } from './interfaces/media-data';
 
+type MediaCategoryExtended = IMediaCategory & { color: string, active: boolean };
 
 @Component({
   selector: 'app-dashboard',
@@ -17,14 +18,19 @@ import { IMediaData, IMediaCategory } from './interfaces/media-data';
 })
 export class DashboardComponent implements OnInit {
 
-  data: any[];
-  errorMessage: string;
-  header = 'VGI4HWM Dashboard Components';
-  subheader = 'Foto- und Videoaufnahmen';
-  categories: Array<IMediaCategory & { color: string, active: boolean }>;
+  public errorMessage: string;
+  public categories: Array<MediaCategoryExtended>;
+  public get selection(): Array<IMediaData>{
+    return this._mapService.selection;
+  }
+
+  private _allDim: CrossFilter.Dimension<IMediaData, IMediaData>;
+  private _dateDim: CrossFilter.Dimension<IMediaData, Date>;
   private _categoryDim: CrossFilter.Dimension<IMediaData, IMediaCategory>;
 
   private _timeChart: dc.BarChart;
+
+  private _colors: d3.scale.Ordinal<string, string> = d3.scale.category10();
 
   constructor(private _dataService: DashboardDataService, private _mapService: DashboardMapService) { }
 
@@ -41,42 +47,37 @@ export class DashboardComponent implements OnInit {
 
   private receiveData(mediaData: IMediaData[]): void {
 
-    const fullDateFormat = d3.time.format.iso;
-    const colors = d3.scale.category10();
-
     for (const mediaElement of mediaData) {
       (<IMediaData>mediaElement).date = d3.time.format.iso.parse(mediaElement.timestamp);
     }
 
     const cf = crossfilter(mediaData as IMediaData[]);
 
-    const allDim = cf.dimension((d: IMediaData) => d);
-    const dateDim = cf.dimension((d: IMediaData) => d.date);
+    this._allDim = cf.dimension((d: IMediaData) => d);
+    this._dateDim = cf.dimension((d: IMediaData) => d.date);
     this._categoryDim = cf.dimension((d: IMediaData) => {
       d.category.valueOf = () => d.category.id;
       return d.category;
     });
-    const dateGroup = dateDim.group();
+    const dateGroup = this._dateDim.group();
     const categoryGroup = this._categoryDim.group();
 
     const categoryCounts = {};
 
     categoryGroup.all().forEach((group, index) => {
       categoryCounts[group.key.shortname] = 0;
-      const color = index in colors.range() ? colors.range()[index] : '#000';
+      const color = index in this._colors.range() ? this._colors.range()[index] : '#000';
       this.categories.push( Object.assign(group.key, {color: color, active: true}) );
     });
 
     this._mapService.addMarkerGroups( this.categories );
 
-    console.log(this.categories);
-
-    const categoryByDate = dateDim.group().reduce(
-      (p, v) => {
+    const categoryByDate = this._dateDim.group().reduce(
+      (p: any, v: IMediaData) => {
         p[v.category.shortname]++;
         return p;
       },
-      (p, v) => {
+      (p: any, v: IMediaData) => {
         p[v.category.shortname]--;
         return p;
       },
@@ -85,49 +86,54 @@ export class DashboardComponent implements OnInit {
 
     this._timeChart = dc.barChart('#time-chart');
 
-    this._timeChart.on('renderlet', () => this._mapService.updateMarker(allDim.top(Infinity)))
+    this._timeChart.on('renderlet', () => this._mapService.updateMarker(this._allDim.top(Infinity)))
       .height(180)
       .margins({ top: 20, right: 0, bottom: 20, left: 25 })
-      .dimension(dateDim)
+      .dimension(this._dateDim)
       .barPadding(2)
       .transitionDuration(200)
       .centerBar(true)
       .elasticY(true)
-      .x(d3.time.scale().domain([
+      .x(d3.time.scale.utc().domain([
         d3.time.day.offset(d3.min(mediaData, (d: IMediaData) => d.date), -1),
         d3.time.day.offset(d3.max(mediaData, (d: IMediaData) => d.date), 1)
       ]))
       .xUnits(function () { return 20; })
-      .colors(colors);
+      .colors(this._colors);
 
-    categoryGroup.all().forEach((group, index) => {
+    this._timeChart.filterAll();
+
+    categoryGroup.all().forEach((group, index: number) => {
 
       if (!!index) {
-        this._timeChart.stack(categoryByDate, group.key.shortname, function (d) {
+        this._timeChart.stack(categoryByDate, group.key.shortname, function (d: any) {
           return d.value[group.key.shortname];
         });
       } else {
-        this._timeChart.group(categoryByDate).valueAccessor(function (d) {
+        this._timeChart.group(categoryByDate).valueAccessor(function (d: any) {
           return d.value[group.key.shortname];
         });
       }
 
     });
 
-    // const test = categoryGroup.all()[2];
-    // categoryDim.filter(test.key);
-
     dc.renderAll();
+
   }
 
-  public onResize(event): void {
+  public onResize(event: Event): void {
     this._timeChart.render();
   }
 
+  public resetTimeChart(): void {
+    this._timeChart.filterAll();
+    dc.redrawAll();
+  }
+
   public updateCategoryFilter(option, event): void {
-    const selection = this.categories.filter((e) => e.active);
-    this._categoryDim.filterAll().filter( (f) => {
-      return -1 !== selection.findIndex((g) => g.id === f.id);
+    const selection = this.categories.filter((categorySelect: MediaCategoryExtended): boolean => categorySelect.active);
+    this._categoryDim.filterAll().filter( (categoryAll: IMediaCategory): boolean => {
+      return -1 !== selection.findIndex((categorySelected: MediaCategoryExtended): boolean => categorySelected.id === categoryAll.id);
     });
     dc.redrawAll();
   }
