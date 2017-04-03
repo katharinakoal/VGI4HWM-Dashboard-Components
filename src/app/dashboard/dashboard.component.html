@@ -1,4 +1,4 @@
-<div class="container">
+<div id="media-component" class="container">
   <div class="row">
     <div class="page-header">
       <h1>VGI4HWM Dashboard Components <small class="text-nowrap">Foto- und Videoaufnahmen</small></h1>
@@ -26,7 +26,7 @@
         <ul class="list-inline">
           <ng-template ngFor let-element [ngForOf]="selection">
             <li class="col-xs-12 col-sm-6 col-lg-4" *ngFor="let image of element.images">
-              <img [src]="image.thumbnail_url" class="img-responsive" [attr.title]="image.title" [attr.alt]="image.caption">
+              <img [src]="image.thumbnail_url" class="img-responsive" [attr.data-image-url]="image.url" [attr.title]="image.title" [attr.alt]="image.caption">
             </li>
           </ng-template>
         </ul>

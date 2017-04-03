@@ -3,6 +3,10 @@
 
 $map-element-height: 400px;
 
+#media-component{
+  min-width: 600px;
+}
+
 #map {
   height: $map-element-height;
 }

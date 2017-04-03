@@ -8,8 +8,8 @@
         },
         "images": [
             {
-                "url": "http://lorempixel.com/1280/800/nature/1/",
-                "thumbnail_url": "http://lorempixel.com/150/100/nature/1/",
+                "url": "assets/images/a1.jpg",
+                "thumbnail_url": "assets/images/rsz_a1.jpg",
                 "title": "Sample Title",
                 "caption": "Lorem Ipsum dolor sit amet"
             }
@@ -30,8 +30,8 @@
         },
         "images": [
             {
-                "url": "http://lorempixel.com/1280/800/nature/2/",
-                "thumbnail_url": "http://lorempixel.com/150/100/nature/2/"
+                "url": "assets/images/h1.jpg",
+                "thumbnail_url": "assets/images/rsz_h1.jpg"
             }
         ],
         "videos": null,
@@ -50,8 +50,8 @@
         },
         "images": [
             {
-                "url": "http://lorempixel.com/1280/800/nature/3/",
-                "thumbnail_url": "http://lorempixel.com/150/100/nature/3/"
+                "url": "assets/images/hws1.jpg",
+                "thumbnail_url": "assets/images/rsz_hws1.jpg"
             }
         ],
         "videos": null,
@@ -70,8 +70,8 @@
         },
         "images": [
             {
-                "url": "http://lorempixel.com/1280/800/nature/4/",
-                "thumbnail_url": "http://lorempixel.com/150/100/nature/4/"
+                "url": "assets/images/ws1.jpg",
+                "thumbnail_url": "assets/images/rsz_ws1.jpg"
             }
         ],
         "videos": null,
@@ -90,12 +90,12 @@
         },
         "images": [
             {
-                "url": "http://lorempixel.com/1280/800/nature/1/",
-                "thumbnail_url": "http://lorempixel.com/150/100/nature/1/"
+                "url": "assets/images/a1.jpg",
+                "thumbnail_url": "assets/images/rsz_a1.jpg"
             },
             {
-                "url": "http://lorempixel.com/1280/800/nature/5/",
-                "thumbnail_url": "http://lorempixel.com/150/100/nature/5/"
+                "url": "assets/images/a2.jpg",
+                "thumbnail_url": "assets/images/rsz_a2.jpg"
             }
         ],
         "videos": null,
@@ -114,8 +114,8 @@
         },
         "images": [
             {
-                "url": "http://lorempixel.com/1280/800/nature/",
-                "thumbnail_url": "http://lorempixel.com/150/100/nature/"
+                "url": "assets/images/a2.jpg",
+                "thumbnail_url": "assets/images/rsz_a2.jpg"
             }
         ],
         "videos": null,
@@ -134,8 +134,8 @@
         },
         "images": [
             {
-                "url": "http://lorempixel.com/1280/800/nature/",
-                "thumbnail_url": "http://lorempixel.com/150/100/nature/"
+                "url": "assets/images/h2.jpg",
+                "thumbnail_url": "assets/images/rsz_h2.jpg"
             }
         ],
         "videos": null,
@@ -154,8 +154,8 @@
         },
         "images": [
             {
-                "url": "http://lorempixel.com/1280/800/nature/",
-                "thumbnail_url": "http://lorempixel.com/150/100/nature/"
+                "url": "assets/images/hws1.jpg",
+                "thumbnail_url": "assets/images/rsz_hws1.jpg"
             }
         ],
         "videos": null,
@@ -174,8 +174,8 @@
         },
         "images": [
             {
-                "url": "http://lorempixel.com/1280/800/nature/",
-                "thumbnail_url": "http://lorempixel.com/150/100/nature/"
+                "url": "assets/images/h2.jpg",
+                "thumbnail_url": "assets/images/rsz_h2.jpg"
             }
         ],
         "videos": null,
@@ -194,8 +194,8 @@
         },
         "images": [
             {
-                "url": "http://lorempixel.com/1280/800/nature/",
-                "thumbnail_url": "http://lorempixel.com/150/100/nature/"
+                "url": "assets/images/ws1.jpg",
+                "thumbnail_url": "assets/images/rsz_ws1.jpg"
             }
         ],
         "videos": null,
