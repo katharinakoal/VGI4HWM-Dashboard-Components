@@ -25,7 +25,7 @@ export class DashboardMapService {
     zoom: 9,
   };
   private _tileLayer = {
-    url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
     options: <L.TileLayerOptions>{
       maxZoom: 18
     }

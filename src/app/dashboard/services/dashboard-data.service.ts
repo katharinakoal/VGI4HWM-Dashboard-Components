@@ -12,7 +12,7 @@ import { IRawMediaData, IMediaData } from '../interfaces/media-data';
 @Injectable()
 export class DashboardDataService {
 
-  private _dataUrl = 'sample_data/sample-media.json';
+  private _dataUrl = 'assets/sample_data/sample-media.json';
 
   constructor(private _http: Http) { }
 
